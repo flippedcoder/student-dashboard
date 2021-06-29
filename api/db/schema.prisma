@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+// Define your own datamodels here and run `yarn redwood prisma migrate dev`
+// to create migrations for them and apply to your dev DB.
+model Course {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Student Student[]
+  Grade   Grade[]
+}
+
+model Student {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  firstName String
+  lastName  String
+  role      String
+  course    Course  @relation(fields: [courseId], references: [id])
+  courseId  Int
+  Grade     Grade[]
+}
+
+model Grade {
+  id        Int     @id @default(autoincrement())
+  grade     String
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  course    Course  @relation(fields: [courseId], references: [id])
+  courseId  Int
+}
